@@ -1,4 +1,4 @@
-# Ursina FirstPersonController
+# Ursina FirstPersonController v1.0
 
 FirstPersonController is an open source Ursina Engine library that anyone can use.
 
