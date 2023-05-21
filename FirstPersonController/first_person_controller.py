@@ -1,3 +1,8 @@
+'''
+Modification of https://github.com/aleksander788/ursina_firstpersoncontroller/tree/main
+
+'''
+
 from ursina import *
 
 class SmoothFollow():
@@ -11,10 +16,13 @@ class SmoothFollow():
         self.entity.world_z = lerp(self.entity.world_z, self.target.world_z, time.dt * self.speed)
 
 class FirstPersonController(Entity):
-    def __init__(self, add_to_scene_entities=True, **kwargs):
+    def __init__(self, add_to_scene_entities=True, ignore_entities=list(), **kwargs):
         self.cursor = Entity(parent=camera.ui, model="quad", color=color.dark_gray, scale=0.008, rotation_z=45)
 
         super().__init__(add_to_scene_entities, **kwargs)
+
+        self.ignore_entities = ignore_entities
+        self.ignore_entities.append(self)
 
         self.model = "cube"
         self.height = 2
@@ -90,26 +98,26 @@ class FirstPersonController(Entity):
         else:
             self.camera_animating = False
         
-        head_top_middle_ray = raycast(self.position + Vec3(0, self.height_no_use, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        head_top_right_ray = raycast(self.position + Vec3(0.5, self.height_no_use - 0.1, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        head_top_left_ray = raycast(self.position + Vec3(-0.5, self.height_no_use - 0.1, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        head_middle_ray = raycast(self.position + Vec3(0, self.height_no_use - 0.1, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        head_left_ray = raycast(self.position + Vec3(-0.5, self.height_no_use - 0.1, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        head_middle_left_ray = raycast(self.position + Vec3(-0.25, self.height_no_use - 0.1, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        head_right_ray = raycast(self.position + Vec3(0.5, self.height_no_use - 0.1, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        head_middle_right_ray = raycast(self.position + Vec3(0.25, self.height_no_use - 0.1, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
+        head_top_middle_ray = raycast(self.position + Vec3(0, self.height_no_use, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        head_top_right_ray = raycast(self.position + Vec3(0.5, self.height_no_use - 0.1, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        head_top_left_ray = raycast(self.position + Vec3(-0.5, self.height_no_use - 0.1, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        head_middle_ray = raycast(self.position + Vec3(0, self.height_no_use - 0.1, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        head_left_ray = raycast(self.position + Vec3(-0.5, self.height_no_use - 0.1, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        head_middle_left_ray = raycast(self.position + Vec3(-0.25, self.height_no_use - 0.1, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        head_right_ray = raycast(self.position + Vec3(0.5, self.height_no_use - 0.1, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        head_middle_right_ray = raycast(self.position + Vec3(0.25, self.height_no_use - 0.1, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
 
-        front_middle_half_ray = raycast(self.position + Vec3(0, self.height_no_use/2, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        front_left_half_ray = raycast(self.position + Vec3(-0.5, self.height_no_use/2, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        front_right_half_ray = raycast(self.position + Vec3(0.5, self.height_no_use/2, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
+        front_middle_half_ray = raycast(self.position + Vec3(0, self.height_no_use/2, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        front_left_half_ray = raycast(self.position + Vec3(-0.5, self.height_no_use/2, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        front_right_half_ray = raycast(self.position + Vec3(0.5, self.height_no_use/2, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
 
-        feet_middle_ray = raycast(self.position + Vec3(0, 0.5, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        feet_left_ray = raycast(self.position + Vec3(-0.5, 0.5, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        feet_middle_left_ray = raycast(self.position + Vec3(-0.25, 0.5, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        feet_right_ray = raycast(self.position + Vec3(0.5, 0.5, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
-        feet_middle_right_ray = raycast(self.position + Vec3(0.25, 0.5, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
+        feet_middle_ray = raycast(self.position + Vec3(0, 0.5, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        feet_left_ray = raycast(self.position + Vec3(-0.5, 0.5, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        feet_middle_left_ray = raycast(self.position + Vec3(-0.25, 0.5, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        feet_right_ray = raycast(self.position + Vec3(0.5, 0.5, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
+        feet_middle_right_ray = raycast(self.position + Vec3(0.25, 0.5, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
 
-        feet_bottom_middle_ray = raycast(self.position + Vec3(0, 0, 0), self.direction, ignore=(self, ), distance=0.5, debug=False)
+        feet_bottom_middle_ray = raycast(self.position + Vec3(0, 0, 0), self.direction, ignore=self.ignore_entities, distance=0.5, debug=False)
 
         if not head_left_ray.hit and not head_right_ray.hit and not head_middle_ray.hit and not feet_left_ray.hit and not feet_right_ray.hit and not head_middle_left_ray.hit and not head_middle_right_ray.hit and not feet_middle_left_ray.hit and not feet_middle_right_ray.hit and not feet_middle_ray.hit and not feet_middle_ray.hit and not front_middle_half_ray.hit and not front_left_half_ray.hit and not front_right_half_ray.hit and not head_top_left_ray.hit and not head_top_middle_ray.hit and not head_top_right_ray.hit:
             self.position += self.direction * (self.speed / 5)
@@ -120,11 +128,11 @@ class FirstPersonController(Entity):
         camera.rotation_x = self.camera_pivot.rotation_x
 
         if self.gravity and not self.jumping:
-            bottom_middle_ray = raycast(self.position, Vec3(0, -1, 0), ignore=(self, ), distance=0.5, debug=False)
-            bottom_1_ray = raycast(self.position, Vec3(-0.5, -1, 0.5), ignore=(self, ), distance=0.5, debug=False)
-            bottom_2_ray = raycast(self.position, Vec3(0.5, -1, 0.5), ignore=(self, ), distance=0.5, debug=False)
-            bottom_3_ray = raycast(self.position, Vec3(-0.5, -1, -0.5), ignore=(self, ), distance=0.5, debug=False)
-            bottom_4_ray = raycast(self.position, Vec3(0.5, -1, -0.5), ignore=(self, ), distance=0.5, debug=False)
+            bottom_middle_ray = raycast(self.position, Vec3(0, -1, 0), ignore=self.ignore_entities, distance=0.5, debug=False)
+            bottom_1_ray = raycast(self.position, Vec3(-0.5, -1, 0.5), ignore=self.ignore_entities, distance=0.5, debug=False)
+            bottom_2_ray = raycast(self.position, Vec3(0.5, -1, 0.5), ignore=self.ignore_entities, distance=0.5, debug=False)
+            bottom_3_ray = raycast(self.position, Vec3(-0.5, -1, -0.5), ignore=self.ignore_entities, distance=0.5, debug=False)
+            bottom_4_ray = raycast(self.position, Vec3(0.5, -1, -0.5), ignore=self.ignore_entities, distance=0.5, debug=False)
 
             ray = raycast(self.world_position + (0, self.height_no_use, 0), self.down, ignore=(self,))
 
@@ -156,11 +164,11 @@ class FirstPersonController(Entity):
                     self.tempSpeed = 0
 
         if self.jumping:
-            top_middle_ray = raycast(self.position + Vec3(0, self.height_no_use, 0), Vec3(0, 1, 0), ignore=(self, ), distance=0.55, debug=False)
-            top_middle_1_ray = raycast(self.position + Vec3(0.5, self.height_no_use, 0.5), Vec3(0, 1, 0), ignore=(self, ), distance=0.55, debug=False)
-            top_middle_2_ray = raycast(self.position + Vec3(-0.5, self.height_no_use, -0.5), Vec3(0, 1, 0), ignore=(self, ), distance=0.55, debug=False)
-            top_middle_3_ray = raycast(self.position + Vec3(0.5, self.height_no_use, -0.5), Vec3(0, 1, 0), ignore=(self, ), distance=0.55, debug=False)
-            top_middle_4_ray = raycast(self.position + Vec3(-0.5, self.height_no_use, 0.5), Vec3(0, 1, 0), ignore=(self, ), distance=0.55, debug=False)
+            top_middle_ray = raycast(self.position + Vec3(0, self.height_no_use, 0), Vec3(0, 1, 0), ignore=self.ignore_entities, distance=0.55, debug=False)
+            top_middle_1_ray = raycast(self.position + Vec3(0.5, self.height_no_use, 0.5), Vec3(0, 1, 0), ignore=self.ignore_entities, distance=0.55, debug=False)
+            top_middle_2_ray = raycast(self.position + Vec3(-0.5, self.height_no_use, -0.5), Vec3(0, 1, 0), ignore=self.ignore_entities, distance=0.55, debug=False)
+            top_middle_3_ray = raycast(self.position + Vec3(0.5, self.height_no_use, -0.5), Vec3(0, 1, 0), ignore=self.ignore_entities, distance=0.55, debug=False)
+            top_middle_4_ray = raycast(self.position + Vec3(-0.5, self.height_no_use, 0.5), Vec3(0, 1, 0), ignore=self.ignore_entities, distance=0.55, debug=False)
             
             if top_middle_ray.hit or top_middle_1_ray.hit or top_middle_2_ray.hit or top_middle_3_ray.hit or top_middle_4_ray.hit:
                 if hasattr(self, "y_animator"):
@@ -224,11 +232,11 @@ class FirstPersonController(Entity):
             if self.sneak == False:
                 self.start_sneak()
             else:
-                sneak_ray = raycast(self.position + Vec3(0, self.height_no_use, 0), Vec3(0, 1, 0), distance=0.6, ignore=(self, ))
-                sneak_1_ray = raycast(self.position + Vec3(0.5, self.height_no_use, 0.5), Vec3(0, 1, 0), distance=0.6, ignore=(self, ))
-                sneak_2_ray = raycast(self.position + Vec3(-0.5, self.height_no_use, -0.5), Vec3(0, 1, 0), distance=0.6, ignore=(self, ))
-                sneak_3_ray = raycast(self.position + Vec3(0.5, self.height_no_use, -0.5), Vec3(0, 1, 0), distance=0.6, ignore=(self, ))
-                sneak_4_ray = raycast(self.position + Vec3(-0.5, self.height_no_use, 0.5), Vec3(0, 1, 0), distance=0.6, ignore=(self, ))
+                sneak_ray = raycast(self.position + Vec3(0, self.height_no_use, 0), Vec3(0, 1, 0), distance=0.6, ignore=self.ignore_entities)
+                sneak_1_ray = raycast(self.position + Vec3(0.5, self.height_no_use, 0.5), Vec3(0, 1, 0), distance=0.6, ignore=self.ignore_entities)
+                sneak_2_ray = raycast(self.position + Vec3(-0.5, self.height_no_use, -0.5), Vec3(0, 1, 0), distance=0.6, ignore=self.ignore_entities)
+                sneak_3_ray = raycast(self.position + Vec3(0.5, self.height_no_use, -0.5), Vec3(0, 1, 0), distance=0.6, ignore=self.ignore_entities)
+                sneak_4_ray = raycast(self.position + Vec3(-0.5, self.height_no_use, 0.5), Vec3(0, 1, 0), distance=0.6, ignore=self.ignore_entities)
                 if not sneak_ray.hit and not sneak_1_ray.hit and not sneak_2_ray.hit and not sneak_3_ray.hit and not sneak_4_ray.hit:
                     self.stop_sneak()
 
@@ -244,12 +252,12 @@ class FirstPersonController(Entity):
 
 if __name__ == '__main__':
     app = Ursina()
-    from first_person_controller import FirstPersonController
     from ursina.shaders.lit_with_shadows_shader import lit_with_shadows_shader
 
     shader = lit_with_shadows_shader
 
     player = FirstPersonController()
+    
 
     Sky(texture="sky.png")
 
@@ -258,7 +266,7 @@ if __name__ == '__main__':
     scene.fog_density = (100, 1000)
 
     window.borderless = False
-    window.editor_ui.disable()
+#    window.editor_ui.disable()
 
     ground = Entity(scale=(15, 1, 40), y=-1, texture="white_cube", collider="box", model="cube", shader=shader)
     ground.texture_scale = (ground.scale_x, ground.scale_z)
@@ -273,5 +281,8 @@ if __name__ == '__main__':
     
     ground4 = Entity(scale=(3, 1, 3), y=4, texture="white_cube", collider="box", model="cube", z=-4, shader=shader)
     ground4.texture_scale = (ground4.scale_x, ground4.scale_z)
+
+    ignore_wall = Entity(scale=2, texture="white_cube", color=color.red, collider="box", model="cube", x=2, shader=shader)
+    player.ignore_entities.append(ignore_wall)
 
     app.run()
