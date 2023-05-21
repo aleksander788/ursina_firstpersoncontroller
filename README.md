@@ -1,4 +1,4 @@
-# Ursina FirstPersonController v1.0
+# Ursina FirstPersonController v1.1
 
 FirstPersonController is an open source Ursina Engine library that anyone can use.
 
@@ -20,6 +20,7 @@ Attributes that can be changed without editing the library:
 - jump_height
 - jump_time
 - in_air_time
+- ignore_entities
 ```
 
 Sample code using FirstPersonController:
